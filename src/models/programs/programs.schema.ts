@@ -31,7 +31,7 @@ export const programDaySchema = z.object({
   day_number: z.number(),
   week: z.number(),
   position: z.number(),
-  title: z.string().nullable().optional(),
+  title: z.string().nullish(),
   program_week_id: z.number().optional(),
   day_workouts: z.array(dayWorkoutSchema).optional(),
 });

@@ -32,20 +32,16 @@ export function DayActionsMenu({
   const isPending = addBlockPending || addPending;
 
   const trigger = (
-    <DropdownMenuTrigger asChild>
-      <Button
-        size={variant === 'fab' ? 'icon' : 'icon-sm'}
-        variant={variant === 'fab' ? 'default' : 'ghost'}
-        disabled={isPending}
-        className={
-          variant === 'fab'
-            ? 'h-12 w-12 rounded-full shadow-lg'
-            : 'rounded-full border border-border hover:bg-muted'
-        }
-        aria-label="Opções do dia"
-      >
-        <MoreVertical className="h-5 w-5" />
-      </Button>
+    <DropdownMenuTrigger
+      className={
+        variant === 'fab'
+          ? 'h-12 w-12 rounded-full shadow-lg'
+          : 'rounded-full border border-border hover:bg-muted'
+      }
+      disabled={isPending}
+      aria-label="Opções do dia"
+    >
+      <MoreVertical className="h-5 w-5" />
     </DropdownMenuTrigger>
   );
 

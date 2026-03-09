@@ -96,7 +96,7 @@ export const dayDetailSchema = z.object({
   day_number: z.number(),
   week: z.number(),
   position: z.number(),
-  title: z.string().optional(),
+  title: z.string().nullish(),
   day_workouts: z.array(dayWorkoutSchema).optional(),
 });
 

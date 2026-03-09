@@ -13,7 +13,10 @@ export async function addWorkoutToDay(programId: number, dayId: number, dayWorko
 }
 
 export async function removeWorkoutFromDay(programId: number, dayId: number, workoutId: number): Promise<void> {
-  return apiClient.delete<void>(`/programs/${programId}/remove_workout_from_day?day_id=${dayId}&workout_id=${workoutId}`);
+  return apiClient.delete<void>(`/programs/${programId}/remove_workout_from_day`, {
+    day_id: dayId,
+    workout_id: workoutId,
+  });
 }
 
 export async function updateProgramDays(programId: number, programDays: unknown[]): Promise<void> {
