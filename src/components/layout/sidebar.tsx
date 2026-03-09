@@ -54,7 +54,13 @@ export function Sidebar() {
         )}
       >
         {!collapsed && (
-          <Image src="/images/logo.png" alt="Trainer Portal" width={128} height={128} />
+          <Image
+            src="/images/logo.png"
+            alt="Trainer Portal"
+            width={128}
+            height={128}
+            className="invert"
+          />
         )}
 
         <Button

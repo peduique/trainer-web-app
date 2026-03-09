@@ -9,7 +9,7 @@ function getAuthTokenFromRequest(request: NextRequest): string | null {
   return cookie?.value ?? null;
 }
 
-export async function proxy(request: NextRequest): Promise<NextResponse> {
+export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
 
   const isPublic = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'));
@@ -17,22 +17,16 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
 
   if (isStatic) return NextResponse.next();
 
-  let isAuthenticated = false;
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3003';
-    const token = getAuthTokenFromRequest(request);
-    const headers: Record<string, string> = {};
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    const res = await fetch(`${apiUrl}/auth/me`, { headers });
-    isAuthenticated = res.ok;
-  } catch {}
+  // Check authentication by token presence only (don't call private API from edge)
+  const token = getAuthTokenFromRequest(request);
+  const isAuthenticated = !!token;
 
   if (!isAuthenticated && !isPublic) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
   if (isAuthenticated && isPublic) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/programs', request.url));
   }
 
   return NextResponse.next();
