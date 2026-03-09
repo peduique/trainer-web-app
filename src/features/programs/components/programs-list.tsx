@@ -1,10 +1,20 @@
 'use client';
 import { usePrograms } from '@/features/programs/hooks/use-programs';
-import { ProgramCard } from './program-card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Spinner } from '@/components/ui/spinner';
+import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Calendar, TrendingUp, Dumbbell } from 'lucide-react';
+
+const formatDate = (date: string) => {
+  const d = new Date(date);
+  return d.toLocaleDateString('pt-BR', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
 
 export function ProgramsList() {
   const { programs, isLoading, error } = usePrograms();
@@ -45,10 +55,153 @@ export function ProgramsList() {
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
-      {programs.map((program) => (
-        <ProgramCard key={program.id} program={program} />
-      ))}
+    <div className="space-y-4">
+      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            {/* Header */}
+            <thead className="border-b border-border bg-muted/40">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  Program
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  Duration
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  Created
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                  Progress
+                </th>
+              </tr>
+            </thead>
+
+            {/* Body */}
+            <tbody className="divide-y divide-border">
+              {programs.map((program) => {
+                const progress = program.current_progress;
+                const progressPercent = progress?.percent ?? 0;
+
+                return (
+                  <tr
+                    key={program.id}
+                    className="transition-colors hover:bg-muted/50"
+                  >
+                    {/* Program Name */}
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/programs/${program.uuid}`}
+                        className="group flex items-start gap-3"
+                      >
+                        <div className="mt-1 rounded-lg bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
+                          <Dumbbell className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                            {program.name}
+                          </p>
+                          {program.description && (
+                            <p className="text-xs text-muted-foreground truncate">
+                              {program.description}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    </td>
+
+                    {/* Duration */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground">
+                          {program.weeks}w
+                        </span>
+                        <span>·</span>
+                        <span>{program.days_per_week}d/w</span>
+                      </div>
+                    </td>
+
+                    {/* Created At */}
+                    <td className="px-6 py-4">
+                      {program.created_at ? (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="h-4 w-4" />
+                          {formatDate(program.created_at)}
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">—</span>
+                      )}
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2">
+                        {program.template && (
+                          <Badge variant="secondary">Template</Badge>
+                        )}
+                        {program.confirmed && (
+                          <Badge variant="default">Active</Badge>
+                        )}
+                        {!program.confirmed && !program.template && (
+                          <Badge variant="outline">Draft</Badge>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Progress */}
+                    <td className="px-6 py-4">
+                      {progress ? (
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <TrendingUp className="h-4 w-4 text-primary" />
+                              <span className="text-sm font-medium">
+                                {progressPercent}%
+                              </span>
+                            </div>
+                          </div>
+                          <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all"
+                              style={{ width: `${progressPercent}%` }}
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {progress.workouts_completed}/{progress.total_workouts}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="h-2 w-24 rounded-full bg-muted" />
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Summary Footer */}
+      <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-6 py-3">
+        <p className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">{programs.length}</span> program
+          {programs.length !== 1 ? 's' : ''} total
+        </p>
+        <div className="flex gap-2">
+          <Link href="/programs/create-ai">
+            <Button size="sm">Generate with AI</Button>
+          </Link>
+          <Link href="/programs/create-manual">
+            <Button size="sm" variant="outline">
+              Create Manually
+            </Button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
