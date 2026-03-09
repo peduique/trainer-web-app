@@ -2,15 +2,15 @@ import { apiClient } from '@/lib/api/client';
 import type { Ticket, TicketComment } from './support.schema';
 
 export async function fetchTickets(): Promise<Ticket[]> {
-  return apiClient.get<Ticket[]>('/api/support/reports');
+  return apiClient.get<Ticket[]>('/support/reports');
 }
 
 export async function fetchTicket(gid: string): Promise<Ticket> {
-  return apiClient.get<Ticket>(`/api/support/reports/${gid}`);
+  return apiClient.get<Ticket>(`/support/reports/${gid}`);
 }
 
 export async function fetchTicketComments(gid: string): Promise<TicketComment[]> {
-  return apiClient.get<TicketComment[]>(`/api/support/reports/${gid}/comments`);
+  return apiClient.get<TicketComment[]>(`/support/reports/${gid}/comments`);
 }
 
 export async function createTicket(data: {
@@ -24,9 +24,9 @@ export async function createTicket(data: {
   formData.append('description', data.description);
   formData.append('category', data.category);
   if (data.screenshot) formData.append('screenshot', data.screenshot);
-  return apiClient.upload<Ticket>('/api/support/reports', formData);
+  return apiClient.upload<Ticket>('/support/reports', formData);
 }
 
 export async function markTicketAsRead(gid: string): Promise<void> {
-  return apiClient.put<void>(`/api/support/reports/${gid}/read`);
+  return apiClient.put<void>(`/support/reports/${gid}/read`);
 }

@@ -11,8 +11,8 @@ export function useSignup() {
 
   return useMutation({
     mutationFn: (data: SignupInput) => signup(data),
-    onSuccess: (user) => {
-      queryClient.setQueryData(AUTH_QUERY_KEY, user);
+    onSuccess: (res) => {
+      queryClient.setQueryData(AUTH_QUERY_KEY, res.user);
       router.push('/dashboard');
     },
   });

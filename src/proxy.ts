@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const PUBLIC_PATHS = ['/login', '/signup', '/forgot-password'];
+const AUTH_COOKIE_NAME = 'auth_token';
+
+function getAuthTokenFromRequest(request: NextRequest): string | null {
+  const cookie = request.cookies.get(AUTH_COOKIE_NAME);
+  return cookie?.value ?? null;
+}
 
 export async function proxy(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
@@ -14,9 +20,10 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
   let isAuthenticated = false;
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3003';
-    const res = await fetch(`${apiUrl}/api/auth/me`, {
-      headers: { cookie: request.headers.get('cookie') ?? '' },
-    });
+    const token = getAuthTokenFromRequest(request);
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${apiUrl}/auth/me`, { headers });
     isAuthenticated = res.ok;
   } catch {}
 

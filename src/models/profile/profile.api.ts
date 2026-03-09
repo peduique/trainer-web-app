@@ -2,23 +2,19 @@ import { apiClient } from '@/lib/api/client';
 import type { Profile, UpdateProfileInput } from './profile.schema';
 
 export async function fetchProfile(): Promise<Profile> {
-  return apiClient.get<Profile>('/api/users/profile');
+  return apiClient.get<Profile>('/users/profile');
 }
 
 export async function updateProfile(data: UpdateProfileInput): Promise<Profile> {
-  return apiClient.patch<Profile>('/api/users/profile', data);
+  return apiClient.patch<Profile>('/users/profile', data);
 }
 
-export async function uploadAvatar(file: File): Promise<{ avatar_url: string }> {
+export async function uploadAvatar(userId: number, file: File): Promise<{ avatar_url: string }> {
   const formData = new FormData();
   formData.append('avatar', file);
-  return apiClient.upload<{ avatar_url: string }>('/api/users/profile/avatar', formData);
-}
-
-export async function deleteAvatar(): Promise<void> {
-  return apiClient.delete<void>('/api/users/profile/avatar');
+  return apiClient.upload<{ avatar_url: string }>(`/users/${userId}/avatar`, formData);
 }
 
 export async function deleteAccount(): Promise<void> {
-  return apiClient.delete<void>('/api/users/account');
+  return apiClient.delete<void>('/auth/account');
 }

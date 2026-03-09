@@ -1,4 +1,5 @@
 import { env } from '@/config/env';
+import { getStoredToken } from '@/lib/auth-token';
 
 export interface ApiError {
   message: string;
@@ -19,20 +20,33 @@ class ApiClientError extends Error {
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const url = `${env.NEXT_PUBLIC_API_URL}${path}`;
+  // In browser: hit same origin so Next rewrites /api/v2/* to Rails (avoids CORS / "not reaching API")
+  const base =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}/api/v2`
+      : env.NEXT_PUBLIC_API_URL;
+  const url = `${base}${path.startsWith('/') ? path : `/${path}`}`;
+  const token = getStoredToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(init.headers as Record<string, string>),
+  };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
   const res = await fetch(url, {
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...init.headers },
+    headers,
     ...init,
   });
 
   if (!res.ok) {
-    let body: { message?: string; errors?: Record<string, string[]> } = {};
+    let body: { message?: string; error?: string; errors?: Record<string, string[]> } = {};
     try {
       body = await res.json();
     } catch {}
+    const message = body.message ?? body.error ?? `Request failed: ${res.status}`;
     throw new ApiClientError({
-      message: body.message ?? `Request failed: ${res.status}`,
+      message,
       status: res.status,
       errors: body.errors,
     });

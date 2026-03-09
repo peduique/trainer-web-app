@@ -1,34 +1,52 @@
 import { apiClient } from '@/lib/api/client';
+import { setStoredToken, setAuthCookie, clearAuthCookie } from '@/lib/auth-token';
 import type { LoginInput, SignupInput, User } from './auth.schema';
 
-export async function fetchCurrentUser(): Promise<User> {
-  return apiClient.get<User>('/api/auth/me');
+export interface AuthResponse {
+  token: string;
+  user: User;
 }
 
-export async function login(data: LoginInput): Promise<User> {
-  return apiClient.post<User>('/api/auth/login', data);
+export async function fetchCurrentUser(): Promise<User> {
+  return apiClient.get<User>('/auth/me');
+}
+
+export async function login(data: LoginInput): Promise<AuthResponse> {
+  const res = await apiClient.post<AuthResponse>('/auth/login', data);
+  setStoredToken(res.token);
+  await setAuthCookie(res.token);
+  return res;
 }
 
 export async function logout(): Promise<void> {
-  return apiClient.delete<void>('/api/auth/logout');
+  setStoredToken(null);
+  await clearAuthCookie();
+  try {
+    await apiClient.delete<void>('/auth/logout');
+  } catch {
+    // Backend may not have logout endpoint
+  }
 }
 
-export async function signup(data: SignupInput): Promise<User> {
-  return apiClient.post<User>('/api/auth/signup', data);
+export async function signup(data: SignupInput): Promise<AuthResponse> {
+  const res = await apiClient.post<AuthResponse>('/auth/signup', data);
+  setStoredToken(res.token);
+  await setAuthCookie(res.token);
+  return res;
 }
 
 export async function forgotPassword(email: string): Promise<void> {
-  return apiClient.post<void>('/api/auth/forgot-password', { email });
+  return apiClient.post<void>('/auth/forgot-password', { email });
 }
 
 export async function verifyResetCode(email: string, code: string): Promise<{ token: string }> {
-  return apiClient.post<{ token: string }>('/api/auth/verify-reset-code', { email, code });
+  return apiClient.post<{ token: string }>('/auth/verify-reset-code', { email, code });
 }
 
 export async function resetPassword(token: string, password: string): Promise<void> {
-  return apiClient.post<void>('/api/auth/reset-password', { token, password });
+  return apiClient.post<void>('/auth/reset-password', { token, password });
 }
 
 export async function changePassword(data: { current_password: string; password: string }): Promise<void> {
-  return apiClient.post<void>('/api/auth/change-password', data);
+  return apiClient.post<void>('/auth/change-password', data);
 }
