@@ -19,7 +19,7 @@ export function ProgramsList() {
 
   if (error) {
     return (
-      <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">
+      <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
         Failed to load programs. Please try again.
       </div>
     );
@@ -45,7 +45,7 @@ export function ProgramsList() {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 md:gap-8">
       {programs.map((program) => (
         <ProgramCard key={program.id} program={program} />
       ))}

@@ -83,6 +83,7 @@ export function DayDetail({ programUuid, dayId }: Props) {
               onExercisePress={(exerciseId) =>
                 router.push(`/programs/${programUuid}/days/${dayId}/exercises/${exerciseId}`)
               }
+              onAddExercises={(workoutId) => setPickerForWorkoutId(workoutId)}
             />
           ))}
         </div>

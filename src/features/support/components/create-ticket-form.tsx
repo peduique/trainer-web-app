@@ -29,7 +29,10 @@ export function CreateTicketForm() {
   });
 
   const onSubmit = (data: FormData) => {
-    mutate({ ...data, screenshot }, { onSuccess: () => router.push('/support') });
+    mutate(
+      { ...data, screenshot: screenshot ?? null },
+      { onSuccess: () => router.push('/support') }
+    );
   };
 
   return (

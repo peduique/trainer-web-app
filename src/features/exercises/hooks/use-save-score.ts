@@ -1,6 +1,7 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { saveScore, completeExercise, saveUserNotes } from '@/models/scores/scores.api';
+import { saveActiveProgram } from '@/hooks/use-active-program';
 
 interface UseScoreActionsParams {
   programUuid: string;
@@ -22,7 +23,10 @@ export function useScoreActions({ programUuid, dayId }: UseScoreActionsParams) {
 
   const complete = useMutation({
     mutationFn: (workoutExerciseId: number) => completeExercise(workoutExerciseId, programUuid),
-    onSuccess: invalidate,
+    onSuccess: () => {
+      saveActiveProgram({ uuid: programUuid });
+      invalidate();
+    },
   });
 
   const updateNotes = useMutation({

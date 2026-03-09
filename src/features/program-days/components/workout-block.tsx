@@ -13,9 +13,10 @@ interface Props {
   onComplete: (workoutId: number) => void;
   onUndo: (workoutId: number) => void;
   onExercisePress?: (exerciseId: number) => void;
+  onAddExercises?: (workoutId: number) => void;
 }
 
-export function WorkoutBlock({ dayWorkout, blockIndex, onComplete, onUndo, onExercisePress }: Props) {
+export function WorkoutBlock({ dayWorkout, blockIndex, onComplete, onUndo, onExercisePress, onAddExercises }: Props) {
   const workouts = dayWorkout.workouts ?? [];
   const showBlockHeader = blockIndex > 0;
 
@@ -35,18 +36,30 @@ export function WorkoutBlock({ dayWorkout, blockIndex, onComplete, onUndo, onExe
 
         return (
           <div key={workout.id} className="mb-4 last:mb-0">
-            <div className="mb-2 flex items-center justify-between">
+            <div className="mb-2 flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-gray-900">{workout.name}</h3>
                 {isFinished && <Badge variant="success">Completed</Badge>}
               </div>
-              <Button
+              <div className="flex items-center gap-1">
+                {onAddExercises && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => onAddExercises(workout.id)}
+                    className="text-muted-foreground"
+                  >
+                    + Exercises
+                  </Button>
+                )}
+                <Button
                 size="sm"
                 variant={isFinished ? 'outline' : 'primary'}
                 onClick={() => isFinished ? onUndo(workout.id) : onComplete(workout.id)}
-              >
-                {isFinished ? 'Undo' : 'Complete'}
-              </Button>
+                >
+                  {isFinished ? 'Undo' : 'Complete'}
+                </Button>
+              </div>
             </div>
 
             <div className="flex flex-col gap-1">

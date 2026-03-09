@@ -1,15 +1,20 @@
 import { z } from 'zod';
+import { dayWorkoutSchema } from '@/models/workouts/workouts.schema';
 
 export const programProgressSchema = z.object({
   percent: z.number(),
-  workouts_completed: z.number(),
-  total_workouts: z.number(),
+  complete: z.number().optional(),
+  total: z.number().optional(),
+  workouts_completed: z.number().optional(),
+  total_workouts: z.number().optional(),
 });
 
 export const programSchema = z.object({
   id: z.number(),
   uuid: z.string(),
   name: z.string(),
+  title: z.string().optional(),
+  description: z.string().optional(),
   weeks: z.number(),
   days_per_week: z.number(),
   template: z.boolean(),
@@ -26,7 +31,9 @@ export const programDaySchema = z.object({
   day_number: z.number(),
   week: z.number(),
   position: z.number(),
-  title: z.string().optional(),
+  title: z.string().nullable().optional(),
+  program_week_id: z.number().optional(),
+  day_workouts: z.array(dayWorkoutSchema).optional(),
 });
 
 export type ProgramDay = z.infer<typeof programDaySchema>;

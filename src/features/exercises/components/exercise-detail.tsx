@@ -39,7 +39,7 @@ export function ExerciseDetail({ programUuid, dayId, exerciseId }: Props) {
   };
 
   return (
-    <div className="mx-auto max-w-2xl flex flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
       {showTimer && (
         <RestTimer seconds={restSeconds} onDismiss={() => setShowTimer(false)} />
       )}

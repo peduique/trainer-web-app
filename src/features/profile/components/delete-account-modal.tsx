@@ -19,24 +19,25 @@ export function DeleteAccountModal({ open, onClose }: Props) {
   return (
     <Modal open={open} onClose={onClose} title="Delete Account">
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground">
           This action is <strong>permanent and irreversible</strong>. All your data will be deleted.
         </p>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground">
           Type <strong>{CONFIRM_TEXT}</strong> to confirm.
         </p>
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={CONFIRM_TEXT}
+          className="font-mono"
         />
-        <div className="flex gap-3">
+        <div className="flex gap-3 pt-2">
           <Button variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
           <Button
-            variant="outline"
+            variant="destructive"
             disabled={input !== CONFIRM_TEXT || isPending}
             onClick={() => mutate()}
-            className="flex-1 border-red-300 text-red-600 hover:bg-red-50"
+            className="flex-1"
           >
             {isPending ? 'Deleting...' : 'Delete Account'}
           </Button>

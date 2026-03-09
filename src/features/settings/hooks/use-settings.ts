@@ -20,5 +20,5 @@ export function useSettings() {
     setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
-  return { settings, updateSetting };
+  return { settings, updateSetting, setSettings };
 }

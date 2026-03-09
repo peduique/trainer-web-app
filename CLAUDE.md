@@ -6,7 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TRAINER Web is a Next.js 16 frontend application for a B2B SaaS platform. It follows Feature-Based Architecture with concepts borrowed from Feature-Sliced Design, communicates with a Ruby on Rails REST API, and is deployed via Docker to AWS ECS.
 
-
 ### Starting Development
 
 ```bash
@@ -121,7 +120,6 @@ src/
 ├── hooks/                  # Shared hooks (use-auth, useFeatureToggle)
 ├── lib/                    # Third-party integrations
 │   ├── query/              # TanStack Query client setup
-│   └── datadog/            # Monitoring
 │
 ├── schemas/                # Shared Zod schemas
 ├── types/                  # Shared TypeScript types
@@ -757,12 +755,8 @@ const envSchema = z.object({
   NEXT_PUBLIC_DATADOG_SITE: z.string().optional(),
   NEXT_PUBLIC_DATADOG_SERVICE: z.string().optional(),
   NEXT_PUBLIC_DATADOG_ENV: z.string().optional(),
-  NEXT_PUBLIC_ENV: z
-    .enum(['development', 'staging', 'production'])
-    .default('development'),
-  NODE_ENV: z
-    .enum(['development', 'test', 'production'])
-    .default('development'),
+  NEXT_PUBLIC_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -788,15 +782,15 @@ const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/workspaces`);
 
 ### Available Variables
 
-| Variable                             | Description                            | Required                      |
-| ------------------------------------ | -------------------------------------- | ----------------------------- |
-| `NEXT_PUBLIC_API_URL`                | REST API base URL                      | No (default: localhost:3003)  |
-| `NEXT_PUBLIC_DATADOG_APPLICATION_ID` | Datadog application ID                 | No                            |
-| `NEXT_PUBLIC_DATADOG_CLIENT_TOKEN`   | Datadog client token                   | No                            |
-| `NEXT_PUBLIC_DATADOG_SITE`           | Datadog site (e.g., us5.datadoghq.com) | No                            |
-| `NEXT_PUBLIC_DATADOG_SERVICE`        | Service name for Datadog               | No                            |
-| `NEXT_PUBLIC_DATADOG_ENV`            | Environment name for Datadog           | No                            |
-| `NEXT_PUBLIC_ENV`                    | Environment (dev/staging/prod)         | No (default: development)     |
+| Variable                             | Description                            | Required                     |
+| ------------------------------------ | -------------------------------------- | ---------------------------- |
+| `NEXT_PUBLIC_API_URL`                | REST API base URL                      | No (default: localhost:3003) |
+| `NEXT_PUBLIC_DATADOG_APPLICATION_ID` | Datadog application ID                 | No                           |
+| `NEXT_PUBLIC_DATADOG_CLIENT_TOKEN`   | Datadog client token                   | No                           |
+| `NEXT_PUBLIC_DATADOG_SITE`           | Datadog site (e.g., us5.datadoghq.com) | No                           |
+| `NEXT_PUBLIC_DATADOG_SERVICE`        | Service name for Datadog               | No                           |
+| `NEXT_PUBLIC_DATADOG_ENV`            | Environment name for Datadog           | No                           |
+| `NEXT_PUBLIC_ENV`                    | Environment (dev/staging/prod)         | No (default: development)    |
 
 ## Important Notes
 
@@ -879,11 +873,6 @@ export const config = {
 
 - Feature toggles are managed by the API via REST
 - Hook: `src/hooks/use-feature-flag.ts`
-
-### Datadog (Monitoring)
-
-- Client: `src/lib/datadog/client.ts`
-- Logs errors, performance metrics, user interactions
 
 ## Quick Reference
 

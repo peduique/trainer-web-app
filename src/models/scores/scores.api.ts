@@ -7,7 +7,7 @@ export async function fetchExerciseHistory(
   perPage = 10
 ): Promise<ExerciseHistoryResponse> {
   return apiClient.get<ExerciseHistoryResponse>(
-    `/api/history/exercises/${exerciseId}/executions?page=${page}&per_page=${perPage}`
+    `/history/exercises/${exerciseId}/executions?page=${page}&per_page=${perPage}`
   );
 }
 

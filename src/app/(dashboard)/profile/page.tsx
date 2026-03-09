@@ -14,46 +14,70 @@ export default function ProfilePage() {
   const { profile, isLoading } = useProfile();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  if (isLoading) return <div className="flex justify-center py-16"><Spinner size="lg" /></div>;
-  if (!profile) return <div className="text-sm text-red-600">Failed to load profile.</div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center py-16">
+        <Spinner size="lg" />
+      </div>
+    );
+  if (!profile)
+    return (
+      <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+        Failed to load profile.
+      </div>
+    );
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <PageHeader title="Profile" />
-      <div className="mb-6">
-        <AvatarUpload currentUrl={profile.avatar_url} name={profile.name} />
-      </div>
-        <div className="rounded-xl border bg-card p-6">
-        <Tabs
-          tabs={[
-            {
-              id: 'info',
-              label: 'Profile Info',
-              content: <ProfileForm profile={profile} />,
-            },
-            {
-              id: 'password',
-              label: 'Change Password',
-              content: <ChangePasswordForm />,
-            },
-            {
-              id: 'danger',
-              label: 'Danger Zone',
-              content: (
-                <div className="flex flex-col gap-4">
-                  <p className="text-sm text-gray-600">Permanently delete your account and all associated data.</p>
-                  <Button
-                    variant="outline"
-                    className="w-fit border-red-300 text-red-600 hover:bg-red-50"
-                    onClick={() => setShowDeleteModal(true)}
-                  >
-                    Delete Account
-                  </Button>
-                </div>
-              ),
-            },
-          ]}
-        />
+    <div className="flex flex-col gap-10">
+      <PageHeader title="Profile" description="Manage your account and preferences" />
+      <div className="flex flex-col gap-4">
+        <section>
+          <h2 className="mb-4 text-sm font-semibold text-foreground">Photo</h2>
+          <AvatarUpload currentUrl={profile.avatar_url} name={profile.name} />
+        </section>
+        <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+          <Tabs
+            tabs={[
+              {
+                id: 'info',
+                label: 'Profile Info',
+                content: (
+                  <div className="pt-6">
+                    <ProfileForm profile={profile} />
+                  </div>
+                ),
+              },
+              {
+                id: 'password',
+                label: 'Change Password',
+                content: (
+                  <div className="pt-6">
+                    <ChangePasswordForm />
+                  </div>
+                ),
+              },
+              {
+                id: 'danger',
+                label: 'Danger Zone',
+                content: (
+                  <div className="flex flex-col gap-4 pt-6">
+                    <p className="text-sm text-muted-foreground">
+                      Permanently delete your account and all associated data. This cannot be
+                      undone.
+                    </p>
+                    <Button
+                      variant="destructive"
+                      className="w-fit"
+                      onClick={() => setShowDeleteModal(true)}
+                    >
+                      Delete Account
+                    </Button>
+                  </div>
+                ),
+              },
+            ]}
+          />
+        </section>
       </div>
       <DeleteAccountModal open={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
     </div>

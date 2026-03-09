@@ -24,13 +24,13 @@ export function ChangePasswordForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <Input label="Current Password" type="password" error={errors.current_password?.message} {...register('current_password')} />
       <Input label="New Password" type="password" error={errors.password?.message} {...register('password')} />
       <Input label="Confirm New Password" type="password" error={errors.password_confirmation?.message} {...register('password_confirmation')} />
-      {error && <p role="alert" className="text-sm text-red-600">{error.message}</p>}
-      {isSuccess && <p className="text-sm text-green-600">Password changed successfully!</p>}
-      <Button type="submit" disabled={isPending}>
+      {error && <p role="alert" className="text-sm text-destructive">{error.message}</p>}
+      {isSuccess && <p role="status" className="text-sm text-green-600">Password changed successfully.</p>}
+      <Button type="submit" disabled={isPending} className="w-full sm:w-fit">
         {isPending ? 'Changing...' : 'Change Password'}
       </Button>
     </form>

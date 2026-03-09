@@ -1,7 +1,9 @@
 'use client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { completeWorkout, undoWorkout, removeWorkoutFromDay, addWorkoutToDay } from '@/models/workouts/workouts.api';
+import { saveActiveProgram } from '@/hooks/use-active-program';
 import { dayDetailQueryKey } from './use-day-detail';
+import { programQueryKey } from '@/features/programs/hooks/use-program';
 
 interface UseWorkoutActionsParams {
   programId: number;
@@ -13,11 +15,17 @@ export function useWorkoutActions({ programId, programUuid, dayId }: UseWorkoutA
   const queryClient = useQueryClient();
   const key = dayDetailQueryKey(programUuid, dayId);
 
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: key });
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: key });
+    queryClient.invalidateQueries({ queryKey: programQueryKey(programUuid) });
+  };
 
   const complete = useMutation({
     mutationFn: (workoutId: number) => completeWorkout(workoutId, programUuid),
-    onSuccess: invalidate,
+    onSuccess: () => {
+      saveActiveProgram({ uuid: programUuid });
+      invalidate();
+    },
   });
 
   const undo = useMutation({

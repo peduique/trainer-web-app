@@ -20,11 +20,9 @@ class ApiClientError extends Error {
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  // In browser: hit same origin so Next rewrites /api/v2/* to Rails (avoids CORS / "not reaching API")
+  // In browser: same origin so Next rewrites /api/v2/* to backend (next.config rewrites)
   const base =
-    typeof window !== 'undefined'
-      ? `${window.location.origin}/api/v2`
-      : env.NEXT_PUBLIC_API_URL;
+    typeof window !== 'undefined' ? `${window.location.origin}/api/v2` : env.NEXT_PUBLIC_API_URL;
   const url = `${base}${path.startsWith('/') ? path : `/${path}`}`;
   const token = getStoredToken();
   const headers: Record<string, string> = {
@@ -59,11 +57,23 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 export const apiClient = {
   get: <T>(path: string, init?: RequestInit) => request<T>(path, { ...init, method: 'GET' }),
   post: <T>(path: string, body?: unknown, init?: RequestInit) =>
-    request<T>(path, { ...init, method: 'POST', body: body !== undefined ? JSON.stringify(body) : undefined }),
+    request<T>(path, {
+      ...init,
+      method: 'POST',
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    }),
   put: <T>(path: string, body?: unknown, init?: RequestInit) =>
-    request<T>(path, { ...init, method: 'PUT', body: body !== undefined ? JSON.stringify(body) : undefined }),
+    request<T>(path, {
+      ...init,
+      method: 'PUT',
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    }),
   patch: <T>(path: string, body?: unknown, init?: RequestInit) =>
-    request<T>(path, { ...init, method: 'PATCH', body: body !== undefined ? JSON.stringify(body) : undefined }),
+    request<T>(path, {
+      ...init,
+      method: 'PATCH',
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    }),
   delete: <T>(path: string, init?: RequestInit) => request<T>(path, { ...init, method: 'DELETE' }),
   upload: <T>(path: string, formData: FormData, init?: RequestInit) =>
     request<T>(path, {

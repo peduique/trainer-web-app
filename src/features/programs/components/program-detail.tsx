@@ -21,9 +21,7 @@ export function ProgramDetail({ uuid }: Props) {
 
   if (error || !program) {
     return (
-      <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">
-        Failed to load program.
-      </div>
+      <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">Failed to load program.</div>
     );
   }
 
@@ -39,24 +37,30 @@ export function ProgramDetail({ uuid }: Props) {
       />
 
       {progress && (
-        <div className="rounded-xl border bg-white p-4">
+        <div className="rounded-xl border bg-card p-4">
           <div className="mb-2 flex items-center justify-between text-sm">
             <span className="font-medium">Progress</span>
-            <span className="text-gray-500">{progress.percent}%</span>
+            <span className="text-muted-foreground">{progress.percent}%</span>
           </div>
-          <div className="h-2 w-full rounded-full bg-gray-200">
+          <div className="h-2 w-full rounded-full bg-muted">
             <div
-              className="h-2 rounded-full bg-blue-600"
+              className="h-2 rounded-full bg-primary"
               style={{ width: `${progress.percent}%` }}
             />
           </div>
-          <p className="mt-1 text-xs text-gray-400">
-            {progress.workouts_completed} / {progress.total_workouts} workouts completed
+          <p className="mt-1 text-xs text-muted-foreground">
+            {(progress.complete ?? progress.workouts_completed) ?? 0} /{' '}
+            {(progress.total ?? progress.total_workouts) ?? 0} workouts completed
           </p>
         </div>
       )}
 
-      <ProgramWeekTabs weeks={program.weeks} days={days} programUuid={uuid} />
+      <ProgramWeekTabs
+        weeks={program.weeks}
+        days={days}
+        programId={program.id}
+        programUuid={uuid}
+      />
     </div>
   );
 }

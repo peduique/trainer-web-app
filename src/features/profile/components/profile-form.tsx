@@ -15,11 +15,15 @@ interface Props {
 
 export function ProfileForm({ profile }: Props) {
   const { mutate, isPending, isSuccess, error } = useUpdateProfile();
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<UpdateProfileInput>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<UpdateProfileInput>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       name: profile.name ?? '',
-      username: profile.username ?? '',
       workout_start_timer_preference: profile.workout_start_timer_preference ?? 'ask',
       workout_timer_default_seconds: profile.workout_timer_default_seconds ?? 60,
     },
@@ -28,16 +32,14 @@ export function ProfileForm({ profile }: Props) {
   useEffect(() => {
     reset({
       name: profile.name ?? '',
-      username: profile.username ?? '',
       workout_start_timer_preference: profile.workout_start_timer_preference ?? 'ask',
       workout_timer_default_seconds: profile.workout_timer_default_seconds ?? 60,
     });
   }, [profile, reset]);
 
   return (
-    <form onSubmit={handleSubmit((d) => mutate(d))} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit((d) => mutate(d))} className="flex flex-col gap-5">
       <Input label="Full Name" error={errors.name?.message} {...register('name')} />
-      <Input label="Username" error={errors.username?.message} {...register('username')} />
       <Select
         label="Workout Timer"
         options={[
@@ -55,9 +57,17 @@ export function ProfileForm({ profile }: Props) {
         error={errors.workout_timer_default_seconds?.message}
         {...register('workout_timer_default_seconds', { valueAsNumber: true })}
       />
-      {error && <p role="alert" className="text-sm text-red-600">{error.message}</p>}
-      {isSuccess && <p className="text-sm text-green-600">Profile updated!</p>}
-      <Button type="submit" disabled={isPending}>
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error.message}
+        </p>
+      )}
+      {isSuccess && (
+        <p role="status" className="text-sm text-green-600">
+          Profile updated.
+        </p>
+      )}
+      <Button type="submit" disabled={isPending} className="w-full sm:w-fit">
         {isPending ? 'Saving...' : 'Save Changes'}
       </Button>
     </form>

@@ -58,21 +58,28 @@ export function ExercisePickerModal({ open, onClose, onAdd }: Props) {
             </p>
           ) : (
             <div className="divide-y">
-              {exercises.map((ex) => (
-                <button
-                  key={ex.id}
-                  onClick={() => toggle(ex.id)}
-                  className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 ${selected.has(ex.id) ? 'bg-blue-50' : ''}`}
-                >
-                  <div className={`h-4 w-4 rounded border flex items-center justify-center ${selected.has(ex.id) ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'}`}>
-                    {selected.has(ex.id) && '✓'}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium">{ex.name}</p>
-                    {ex.body_part && <p className="text-xs text-gray-400">{ex.body_part}</p>}
-                  </div>
-                </button>
-              ))}
+              {exercises.map((ex) => {
+                const bodyPartLabel = typeof ex.body_part === 'string'
+                  ? ex.body_part
+                  : (ex.body_part && typeof ex.body_part === 'object' && 'name' in ex.body_part
+                    ? (ex.body_part as { name: string }).name
+                    : null);
+                return (
+                  <button
+                    key={ex.id}
+                    onClick={() => toggle(ex.id)}
+                    className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 ${selected.has(ex.id) ? 'bg-blue-50' : ''}`}
+                  >
+                    <div className={`h-4 w-4 rounded border flex items-center justify-center ${selected.has(ex.id) ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'}`}>
+                      {selected.has(ex.id) && '✓'}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">{ex.name}</p>
+                      {bodyPartLabel && <p className="text-xs text-muted-foreground">{bodyPartLabel}</p>}
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>

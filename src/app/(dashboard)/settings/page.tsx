@@ -6,9 +6,9 @@ export const metadata: Metadata = { title: 'Settings' };
 
 export default function SettingsPage() {
   return (
-    <div className="mx-auto max-w-lg">
+    <div className="flex flex-col gap-10">
       <PageHeader title="Settings" description="Configure your app preferences" />
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <div className="w-full rounded-xl border border-border bg-card p-6 shadow-sm">
         <SettingsForm />
       </div>
     </div>

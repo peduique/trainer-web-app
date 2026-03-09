@@ -1,8 +1,10 @@
 'use client';
 import { useEffect, useRef } from 'react';
-import { useTicket, useTicketComments, useMarkAsRead } from '@/features/support/hooks/use-tickets';
+import { useRouter } from 'next/navigation';
+import { useTicket, useTicketComments, useMarkAsRead, useDeleteTicket } from '@/features/support/hooks/use-tickets';
 import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
+import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/layout/page-header';
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -16,9 +18,11 @@ interface Props {
 }
 
 export function TicketDetail({ gid }: Props) {
+  const router = useRouter();
   const { data: ticket, isLoading } = useTicket(gid);
   const { data: comments = [] } = useTicketComments(gid);
   const markAsRead = useMarkAsRead(gid);
+  const deleteTicket = useDeleteTicket();
   const mutateRef = useRef(markAsRead.mutate);
   mutateRef.current = markAsRead.mutate;
 
@@ -35,11 +39,26 @@ export function TicketDetail({ gid }: Props) {
         title={ticket.name}
         breadcrumbs={[{ label: 'Support', href: '/support' }, { label: ticket.name }]}
         actions={
-          ticket.category ? (
-            <Badge variant={ticket.category === 'bug' ? 'error' : ticket.category === 'feature_request' ? 'info' : 'warning'}>
-              {CATEGORY_LABELS[ticket.category]}
-            </Badge>
-          ) : undefined
+          <div className="flex items-center gap-2">
+            {ticket.category && (
+              <Badge variant={ticket.category === 'bug' ? 'error' : ticket.category === 'feature_request' ? 'info' : 'warning'}>
+                {CATEGORY_LABELS[ticket.category]}
+              </Badge>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-destructive hover:bg-destructive/10"
+              disabled={deleteTicket.isPending}
+              onClick={() => {
+                if (confirm('Delete this ticket?')) {
+                  deleteTicket.mutate(gid, { onSuccess: () => router.push('/support') });
+                }
+              }}
+            >
+              {deleteTicket.isPending ? 'Deleting...' : 'Delete'}
+            </Button>
+          </div>
         }
       />
 

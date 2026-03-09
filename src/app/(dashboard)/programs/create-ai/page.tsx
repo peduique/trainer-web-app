@@ -6,13 +6,13 @@ export const metadata: Metadata = { title: 'Generate Program with AI' };
 
 export default function CreateAiPage() {
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="flex flex-col gap-10">
       <PageHeader
-        title="Generate with AI"
-        breadcrumbs={[{ label: 'Programs', href: '/programs' }, { label: 'Generate with AI' }]}
-        description="Tell us your goals and we'll build a custom program."
+        title="Custom Program"
+        breadcrumbs={[{ label: 'Programs', href: '/programs' }, { label: 'Custom Program' }]}
+        description="Generate an AI-powered plan built for your personal goals and target muscles."
       />
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-border bg-card p-6 shadow-sm md:p-8">
         <CreateProgramAiForm />
       </div>
     </div>

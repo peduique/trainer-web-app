@@ -22,17 +22,17 @@ export function AvatarUpload({ currentUrl, name }: Props) {
   return (
     <div className="flex items-center gap-4">
       <Avatar src={currentUrl} name={name ?? undefined} size="lg" />
-      <div className="flex flex-col gap-2">
+      {/* <div className="flex flex-col gap-2">
         <Button size="sm" variant="outline" onClick={() => inputRef.current?.click()} disabled={upload.isPending}>
           {upload.isPending ? 'Uploading...' : 'Change Photo'}
         </Button>
         {currentUrl && (
-          <Button size="sm" variant="ghost" onClick={() => remove.mutate()} disabled={remove.isPending}>
+          <Button size="sm" variant="ghost" className="text-muted-foreground" onClick={() => remove.mutate()} disabled={remove.isPending}>
             Remove
           </Button>
         )}
-        <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
-      </div>
+        <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} aria-label="Upload profile photo" />
+      </div> */}
     </div>
   );
 }

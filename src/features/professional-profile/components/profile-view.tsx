@@ -15,8 +15,8 @@ export function ProfessionalProfileView({ uuid }: Props) {
   if (error || !professional) return <div className="rounded-lg bg-red-50 p-4 text-sm text-red-600">Profile not found.</div>;
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="rounded-2xl bg-white p-8 shadow-sm">
+    <div className="w-full">
+      <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
         <div className="flex items-start gap-6">
           <Avatar src={professional.avatar_url} name={professional.name} size="lg" />
           <div className="flex-1">
