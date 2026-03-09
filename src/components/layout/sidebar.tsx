@@ -54,13 +54,7 @@ export function Sidebar() {
         )}
       >
         {!collapsed && (
-          <Image
-            src="/images/logo.png"
-            alt="Trainer Portal"
-            width={128}
-            height={128}
-            className="invert"
-          />
+          <Image src="/images/logo.png" alt="Trainer Portal" width={128} height={128} />
         )}
 
         <Button
@@ -117,9 +111,7 @@ export function Sidebar() {
           >
             <Avatar name={user?.name ?? user?.email} size="sm" />
             {!collapsed && (
-              <span className="truncate text-sm font-medium">
-                {user?.name ?? user?.email}
-              </span>
+              <span className="truncate text-sm font-medium">{user?.name ?? user?.email}</span>
             )}
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" side="top" className="w-48">

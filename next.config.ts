@@ -8,13 +8,10 @@ const apiUpstream = process.env.API_UPSTREAM_URL ?? 'http://localhost:3500';
 const nextConfig: NextConfig = {
   output: 'standalone',
   env: {
-    NEXT_PUBLIC_ASANA_PAT: process.env.EXPO_PUBLIC_ASANA_PAT ?? process.env.NEXT_PUBLIC_ASANA_PAT,
-    NEXT_PUBLIC_ASANA_PROJECT_GID:
-      process.env.EXPO_PUBLIC_ASANA_PROJECT_GID ?? process.env.NEXT_PUBLIC_ASANA_PROJECT_GID,
-    NEXT_PUBLIC_TRIAGE_FUNCTION_URL:
-      process.env.EXPO_PUBLIC_TRIAGE_FUNCTION_URL ?? process.env.NEXT_PUBLIC_TRIAGE_FUNCTION_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY:
-      process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_ASANA_PAT: process.env.NEXT_PUBLIC_ASANA_PAT,
+    NEXT_PUBLIC_ASANA_PROJECT_GID: process.env.NEXT_PUBLIC_ASANA_PROJECT_GID,
+    NEXT_PUBLIC_TRIAGE_FUNCTION_URL: process.env.NEXT_PUBLIC_TRIAGE_FUNCTION_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   },
   async rewrites() {
     return [
