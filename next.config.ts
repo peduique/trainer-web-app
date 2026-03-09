@@ -1,5 +1,8 @@
 import type { NextConfig } from 'next';
 
+// API upstream URL for server-side rewrites
+// Must be configured in Vercel environment variables as API_UPSTREAM_URL
+// For staging: https://lobster.element26-staging-2.staging.c66.me/api/v2
 const apiUpstream = process.env.API_UPSTREAM_URL ?? 'http://localhost:3500';
 
 const nextConfig: NextConfig = {

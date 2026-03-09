@@ -20,9 +20,9 @@ class ApiClientError extends Error {
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  // In browser: same origin so Next rewrites /api/v2/* to backend (next.config rewrites)
-  const base =
-    typeof window !== 'undefined' ? `${window.location.origin}/api/v2` : env.NEXT_PUBLIC_API_URL;
+  // Always use /api/v2 relative path - works on client and server
+  // Next.js will proxy this to the actual backend via rewrites in next.config.js
+  const base = '/api/v2';
   const url = `${base}${path.startsWith('/') ? path : `/${path}`}`;
   const token = getStoredToken();
   const headers: Record<string, string> = {
