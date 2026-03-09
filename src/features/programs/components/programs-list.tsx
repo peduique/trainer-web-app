@@ -55,152 +55,132 @@ export function ProgramsList() {
   }
 
   return (
-    <div className="space-y-4">
-      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            {/* Header */}
-            <thead className="border-b border-border bg-muted/40">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                  Program
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                  Duration
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                  Created
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                  Progress
-                </th>
-              </tr>
-            </thead>
+    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          {/* Header */}
+          <thead className="border-b border-border bg-muted/40">
+            <tr>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                Program
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                Duration
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                Created
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                Status
+              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                Progress
+              </th>
+            </tr>
+          </thead>
 
-            {/* Body */}
-            <tbody className="divide-y divide-border">
-              {programs.map((program) => {
-                const progress = program.current_progress;
-                const progressPercent = progress?.percent ?? 0;
+          {/* Body */}
+          <tbody className="divide-y divide-border">
+            {programs.map((program) => {
+              const progress = program.current_progress;
+              const progressPercent = progress?.percent ?? 0;
 
-                return (
-                  <tr
-                    key={program.id}
-                    className="transition-colors hover:bg-muted/50"
-                  >
-                    {/* Program Name */}
-                    <td className="px-6 py-4">
-                      <Link
-                        href={`/programs/${program.uuid}`}
-                        className="group flex items-start gap-3"
-                      >
-                        <div className="mt-1 rounded-lg bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
-                          <Dumbbell className="h-5 w-5 text-primary" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                            {program.name}
+              return (
+                <tr
+                  key={program.id}
+                  className="transition-colors hover:bg-muted/50"
+                >
+                  {/* Program Name */}
+                  <td className="px-6 py-4">
+                    <Link
+                      href={`/programs/${program.uuid}`}
+                      className="group flex items-start gap-3"
+                    >
+                      <div className="mt-1 rounded-lg bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
+                        <Dumbbell className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                          {program.name}
+                        </p>
+                        {program.description && (
+                          <p className="text-xs text-muted-foreground truncate">
+                            {program.description}
                           </p>
-                          {program.description && (
-                            <p className="text-xs text-muted-foreground truncate">
-                              {program.description}
-                            </p>
-                          )}
-                        </div>
-                      </Link>
-                    </td>
+                        )}
+                      </div>
+                    </Link>
+                  </td>
 
-                    {/* Duration */}
-                    <td className="px-6 py-4">
+                  {/* Duration */}
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">
+                        {program.weeks}w
+                      </span>
+                      <span>·</span>
+                      <span>{program.days_per_week}d/w</span>
+                    </div>
+                  </td>
+
+                  {/* Created At */}
+                  <td className="px-6 py-4">
+                    {program.created_at ? (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span className="font-medium text-foreground">
-                          {program.weeks}w
-                        </span>
-                        <span>·</span>
-                        <span>{program.days_per_week}d/w</span>
+                        <Calendar className="h-4 w-4" />
+                        {formatDate(program.created_at)}
                       </div>
-                    </td>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">—</span>
+                    )}
+                  </td>
 
-                    {/* Created At */}
-                    <td className="px-6 py-4">
-                      {program.created_at ? (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          {formatDate(program.created_at)}
-                        </div>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">—</span>
+                  {/* Status */}
+                  <td className="px-6 py-4">
+                    <div className="flex gap-2">
+                      {program.template && (
+                        <Badge variant="secondary">Template</Badge>
                       )}
-                    </td>
+                      {program.confirmed && (
+                        <Badge variant="default">Active</Badge>
+                      )}
+                      {!program.confirmed && !program.template && (
+                        <Badge variant="outline">Draft</Badge>
+                      )}
+                    </div>
+                  </td>
 
-                    {/* Status */}
-                    <td className="px-6 py-4">
-                      <div className="flex gap-2">
-                        {program.template && (
-                          <Badge variant="secondary">Template</Badge>
-                        )}
-                        {program.confirmed && (
-                          <Badge variant="default">Active</Badge>
-                        )}
-                        {!program.confirmed && !program.template && (
-                          <Badge variant="outline">Draft</Badge>
-                        )}
+                  {/* Progress */}
+                  <td className="px-6 py-4">
+                    {progress ? (
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <TrendingUp className="h-4 w-4 text-primary" />
+                            <span className="text-sm font-medium">
+                              {progressPercent}%
+                            </span>
+                          </div>
+                        </div>
+                        <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all"
+                            style={{ width: `${progressPercent}%` }}
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {progress.workouts_completed}/{progress.total_workouts}
+                        </p>
                       </div>
-                    </td>
-
-                    {/* Progress */}
-                    <td className="px-6 py-4">
-                      {progress ? (
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-1.5">
-                              <TrendingUp className="h-4 w-4 text-primary" />
-                              <span className="text-sm font-medium">
-                                {progressPercent}%
-                              </span>
-                            </div>
-                          </div>
-                          <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all"
-                              style={{ width: `${progressPercent}%` }}
-                            />
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {progress.workouts_completed}/{progress.total_workouts}
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="h-2 w-24 rounded-full bg-muted" />
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Summary Footer */}
-      <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-6 py-3">
-        <p className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">{programs.length}</span> program
-          {programs.length !== 1 ? 's' : ''} total
-        </p>
-        <div className="flex gap-2">
-          <Link href="/programs/create-ai">
-            <Button size="sm">Generate with AI</Button>
-          </Link>
-          <Link href="/programs/create-manual">
-            <Button size="sm" variant="outline">
-              Create Manually
-            </Button>
-          </Link>
-        </div>
+                    ) : (
+                      <div className="h-2 w-24 rounded-full bg-muted" />
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );
