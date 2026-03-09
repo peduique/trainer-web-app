@@ -1,10 +1,10 @@
 .PHONY: dev build run stop logs shell lint format utest utest-watch mtest e2e test-all
 
 dev:
-	npm run dev
+	pnpm run dev
 
 build:
-	npm run build
+	pnpm run build
 
 run:
 	docker build -t trainer-portal . && docker run -p 3000:3000 --name trainer-portal trainer-portal
@@ -19,21 +19,21 @@ shell:
 	docker exec -it trainer-portal sh
 
 lint:
-	npm run lint
+	pnpm run lint
 
 format:
-	npm run format
+	pnpm run format
 
 utest:
-	npm run test:coverage
+	pnpm run test:coverage
 
 utest-watch:
-	npm run test:watch
+	pnpm run test:watch
 
 mtest:
 	npx stryker run
 
 e2e:
-	npm run test:e2e
+	pnpm run test:e2e
 
 test-all: utest mtest e2e

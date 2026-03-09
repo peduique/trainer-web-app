@@ -1,0 +1,22 @@
+import { apiClient } from '@/lib/api/client';
+import type { Subscription, Plan } from './subscriptions.schema';
+
+export async function fetchSubscription(): Promise<Subscription> {
+  return apiClient.get<Subscription>('/api/subscriptions/current');
+}
+
+export async function fetchPlans(): Promise<Plan[]> {
+  return apiClient.get<Plan[]>('/api/subscriptions/plans');
+}
+
+export async function createCheckoutSession(planName: string): Promise<{ url: string }> {
+  return apiClient.post<{ url: string }>('/api/subscriptions/checkout', { plan_name: planName });
+}
+
+export async function cancelSubscription(): Promise<Subscription> {
+  return apiClient.post<Subscription>('/api/subscriptions/cancel');
+}
+
+export async function reactivateSubscription(): Promise<Subscription> {
+  return apiClient.post<Subscription>('/api/subscriptions/reactivate');
+}
