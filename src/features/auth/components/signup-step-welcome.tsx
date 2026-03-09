@@ -6,7 +6,7 @@ export function SignupStepWelcome({ onNext }: { onNext: () => void }) {
       <div className="text-6xl">👋</div>
       <div>
         <h2 className="text-2xl font-bold">Welcome to Trainer Portal</h2>
-        <p className="mt-2 text-gray-500">Your fitness journey starts here. Let's set up your account.</p>
+        <p className="mt-2 text-gray-500">Your fitness journey starts here. Let&apos;s set up your account.</p>
       </div>
       <Button onClick={onNext} className="w-full">
         Get Started

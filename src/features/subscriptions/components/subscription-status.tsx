@@ -17,17 +17,17 @@ export function SubscriptionStatus({ subscription }: Props) {
   const statusInfo = STATUS_BADGE[subscription.status] ?? { variant: 'default' as const, label: subscription.status };
 
   return (
-    <div className="rounded-xl border bg-white p-6">
+    <div className="rounded-xl border border-border bg-card p-6">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-500">Current Plan</p>
-          <p className="mt-1 text-xl font-bold capitalize text-gray-900">{subscription.plan_name}</p>
+        <p className="text-sm text-muted-foreground">Current Plan</p>
+        <p className="mt-1 font-heading text-xl font-bold capitalize text-foreground">{subscription.plan_name}</p>
         </div>
         <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
       </div>
 
       {subscription.current_period_end && (
-        <p className="mt-3 text-sm text-gray-500">
+        <p className="mt-3 text-sm text-muted-foreground">
           {subscription.status === 'canceled' ? 'Access until' : 'Renews on'}{' '}
           <strong>{new Date(subscription.current_period_end).toLocaleDateString()}</strong>
         </p>

@@ -61,7 +61,7 @@ export function ForgotPasswordForm() {
 
       {step === 'email' && (
         <form onSubmit={emailForm.handleSubmit(handleEmailSubmit)} className="flex flex-col gap-4">
-          <p className="text-sm text-gray-500">Enter your email and we'll send you a reset code.</p>
+          <p className="text-sm text-gray-500">Enter your email and we&apos;ll send you a reset code.</p>
           <Input label="Email" type="email" error={emailForm.formState.errors.email?.message} {...emailForm.register('email')} />
           <Button type="submit" disabled={isLoading} className="w-full">{isLoading ? 'Sending...' : 'Send Reset Code'}</Button>
         </form>

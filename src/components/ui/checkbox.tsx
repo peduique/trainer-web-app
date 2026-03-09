@@ -1,33 +1,55 @@
-'use client';
-import { InputHTMLAttributes, forwardRef } from 'react';
+"use client"
 
-interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label: string;
-  error?: string;
+import * as React from "react"
+import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox"
+
+import { cn } from "@/lib/utils"
+import { CheckIcon } from "lucide-react"
+
+function CheckboxRoot({ className, ...props }: CheckboxPrimitive.Root.Props) {
+  return (
+    <CheckboxPrimitive.Root
+      data-slot="checkbox"
+      className={cn(
+        "peer relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none group-has-disabled/field:opacity-50 after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary",
+        className
+      )}
+      {...props}
+    >
+      <CheckboxPrimitive.Indicator
+        data-slot="checkbox-indicator"
+        className="grid place-content-center text-current transition-none [&>svg]:size-3.5"
+      >
+        <CheckIcon
+        />
+      </CheckboxPrimitive.Indicator>
+    </CheckboxPrimitive.Root>
+  )
 }
 
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
-  ({ label, error, className = '', id, ...props }, ref) => {
-    const checkId = id ?? label.toLowerCase().replace(/\s+/g, '-');
+interface CheckboxWithLabelProps extends Omit<CheckboxPrimitive.Root.Props, 'onChange'> {
+  label?: string
+  onChange?: (checked: boolean) => void
+}
+
+function Checkbox({ className, label, checked, onChange, ...props }: CheckboxWithLabelProps) {
+  const root = (
+    <CheckboxRoot
+      className={className}
+      checked={checked}
+      onCheckedChange={onChange}
+      {...props}
+    />
+  )
+  if (label) {
     return (
-      <div className="flex flex-col gap-1">
-        <label htmlFor={checkId} className="flex cursor-pointer items-center gap-2">
-          <input
-            ref={ref}
-            type="checkbox"
-            id={checkId}
-            className={`h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 ${className}`}
-            {...props}
-          />
-          <span className="text-sm font-medium text-gray-700">{label}</span>
-        </label>
-        {error && (
-          <p role="alert" className="text-xs text-red-600">
-            {error}
-          </p>
-        )}
-      </div>
-    );
+      <label className="flex items-center gap-2 cursor-pointer">
+        {root}
+        <span className="text-sm font-medium">{label}</span>
+      </label>
+    )
   }
-);
-Checkbox.displayName = 'Checkbox';
+  return root
+}
+
+export { Checkbox, CheckboxRoot }

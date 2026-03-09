@@ -1,32 +1,49 @@
 'use client';
-import { TextareaHTMLAttributes, forwardRef } from 'react';
 
-interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+import * as React from 'react';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+
+interface TextareaProps extends React.ComponentProps<'textarea'> {
   label?: string;
   error?: string;
+  hint?: string;
+  className?: string;
 }
 
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, error, className = '', id, ...props }, ref) => {
-    const areaId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
+const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+  ({ label, error, hint, className, id, ...props }, ref) => {
+    const textareaId = id ?? label?.toLowerCase().replace(/\s+/g, '-');
     return (
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={areaId} className="text-sm font-medium text-gray-700">
+          <Label htmlFor={textareaId} className="text-foreground">
             {label}
-          </label>
+          </Label>
         )}
         <textarea
           ref={ref}
-          id={areaId}
-          rows={4}
-          className={`rounded-md border px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 ${error ? 'border-red-500' : 'border-gray-300'} ${className}`}
+          id={textareaId}
+          data-slot="textarea"
           aria-invalid={!!error}
+          aria-describedby={
+            error ? `${textareaId}-error` : hint ? `${textareaId}-hint` : undefined
+          }
+          className={cn(
+            'flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40',
+            error && 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20',
+            className
+          )}
           {...props}
         />
         {error && (
-          <p role="alert" className="text-xs text-red-600">
+          <p id={`${textareaId}-error`} role="alert" className="text-xs text-destructive">
             {error}
+          </p>
+        )}
+        {hint && !error && (
+          <p id={`${textareaId}-hint`} className="text-xs text-muted-foreground">
+            {hint}
           </p>
         )}
       </div>
@@ -34,3 +51,5 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   }
 );
 Textarea.displayName = 'Textarea';
+
+export { Textarea };

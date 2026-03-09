@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter, Geist } from 'next/font/google';
+import { DM_Sans, Outfit } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/components/providers/query-provider';
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
-
-const inter = Inter({ subsets: ['latin'] });
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
+const outfit = Outfit({ subsets: ['latin'], variable: '--font-heading' });
 
 export const metadata: Metadata = {
   title: { template: '%s | Trainer Portal', default: 'Trainer Portal' },
@@ -15,8 +14,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className={inter.className}>
+    <html lang="en" className={cn(dmSans.variable, outfit.variable)}>
+      <body className="min-h-screen bg-background font-sans text-foreground antialiased">
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

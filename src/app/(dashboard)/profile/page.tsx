@@ -23,7 +23,7 @@ export default function ProfilePage() {
       <div className="mb-6">
         <AvatarUpload currentUrl={profile.avatar_url} name={profile.name} />
       </div>
-      <div className="rounded-2xl bg-white p-6 shadow-sm">
+        <div className="rounded-xl border bg-card p-6">
         <Tabs
           tabs={[
             {

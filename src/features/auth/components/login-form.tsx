@@ -44,13 +44,13 @@ export function LoginForm() {
         {isPending ? 'Signing in...' : 'Sign in'}
       </Button>
 
-      <div className="flex flex-col gap-2 text-center text-sm text-gray-500">
-        <Link href="/forgot-password" className="hover:text-blue-600">
+      <div className="flex flex-col gap-2 text-center text-sm text-muted-foreground">
+        <Link href="/forgot-password" className="hover:text-primary">
           Forgot your password?
         </Link>
         <span>
           {"Don't have an account? "}
-          <Link href="/signup" className="font-medium text-blue-600 hover:underline">
+          <Link href="/signup" className="font-medium text-primary hover:underline">
             Sign up
           </Link>
         </span>

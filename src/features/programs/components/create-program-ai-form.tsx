@@ -170,7 +170,7 @@ export function CreateProgramAiForm() {
             <Checkbox
               label="Include Warm-Up"
               checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
+              onChange={(checked) => field.onChange(checked)}
             />
           )}
         />
@@ -181,7 +181,7 @@ export function CreateProgramAiForm() {
             <Checkbox
               label="Include Stretching"
               checked={field.value}
-              onChange={(e) => field.onChange(e.target.checked)}
+              onChange={(checked) => field.onChange(checked)}
             />
           )}
         />
