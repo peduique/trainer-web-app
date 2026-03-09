@@ -6,6 +6,7 @@ import { useWorkoutActions } from '@/features/program-days/hooks/use-workout-act
 import { useProgram } from '@/features/programs/hooks/use-program';
 import { WorkoutBlock } from './workout-block';
 import { ExercisePickerModal } from './exercise-picker-modal';
+import { DayActionsMenu } from './day-actions-menu';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/layout/page-header';
@@ -21,7 +22,13 @@ export function DayDetail({ programUuid, dayId }: Props) {
   const { program } = useProgram(programUuid);
   const programId = program?.id ?? 0;
   const { day, isLoading, error, refetch } = useDayDetail(programUuid, dayId);
-  const { complete, undo, add } = useWorkoutActions({ programId, programUuid, dayId });
+  const { complete, undo, add, addBlock } = useWorkoutActions({
+    programId,
+    programUuid,
+    dayId,
+    program,
+    day,
+  });
   const [pickerForWorkoutId, setPickerForWorkoutId] = useState<number | null>(null);
 
   if (isLoading) {
@@ -33,11 +40,16 @@ export function DayDetail({ programUuid, dayId }: Props) {
   }
 
   const dayWorkouts = (day.day_workouts ?? []).sort((a, b) => a.position - b.position);
+  const lastBlockId = dayWorkouts.length > 0 ? dayWorkouts[dayWorkouts.length - 1].id : undefined;
 
   const handleAddExercises = async (exerciseIds: number[]) => {
     if (!pickerForWorkoutId) return;
     await addExercisesToWorkout(pickerForWorkoutId, exerciseIds);
     await refetch();
+  };
+
+  const handleAddWorkout = () => {
+    add.mutate(lastBlockId);
   };
 
   return (
@@ -50,23 +62,13 @@ export function DayDetail({ programUuid, dayId }: Props) {
           { label: 'Program', href: `/programs/${programUuid}` },
           { label: `Day ${day.day_number}` },
         ]}
-        actions={
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => add.mutate(undefined)}
-            disabled={add.isPending}
-          >
-            + Add Workout
-          </Button>
-        }
       />
 
       {dayWorkouts.length === 0 ? (
         <div className="rounded-xl border border-dashed border-gray-200 py-16 text-center">
-          <p className="text-gray-400">No workouts scheduled for this day.</p>
-          <Button className="mt-4" onClick={() => add.mutate(undefined)}>
-            Add Workout
+          <p className="text-gray-400">No blocks yet. Add a block, then add workouts to it.</p>
+          <Button className="mt-4" onClick={() => addBlock.mutate()} disabled={addBlock.isPending || !program}>
+            Add Block
           </Button>
         </div>
       ) : (
@@ -76,8 +78,10 @@ export function DayDetail({ programUuid, dayId }: Props) {
               key={dw.id}
               dayWorkout={dw}
               blockIndex={index}
+              totalBlocks={dayWorkouts.length}
               programUuid={programUuid}
               dayId={dayId}
+              onAddWorkout={() => add.mutate(dw.id)}
               onComplete={(workoutId) => complete.mutate(workoutId)}
               onUndo={(workoutId) => undo.mutate(workoutId)}
               onExercisePress={(exerciseId) =>
@@ -88,6 +92,16 @@ export function DayDetail({ programUuid, dayId }: Props) {
           ))}
         </div>
       )}
+
+      <DayActionsMenu
+        variant="fab"
+        onAddBlock={() => addBlock.mutate()}
+        onAddWorkout={handleAddWorkout}
+        addBlockDisabled={addBlock.isPending || !program}
+        addWorkoutDisabled={add.isPending || dayWorkouts.length === 0}
+        addBlockPending={addBlock.isPending}
+        addPending={add.isPending}
+      />
 
       {pickerForWorkoutId !== null && (
         <ExercisePickerModal

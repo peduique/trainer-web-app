@@ -57,7 +57,7 @@ export function ChipGroup({
                 'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 selected
-                  ? 'border-primary bg-primary text-primary-foreground'
+                  ? 'border-sky-300 bg-sky-100 text-sky-800 dark:border-sky-600 dark:bg-sky-900/50 dark:text-sky-200'
                   : 'border-border bg-muted/50 text-foreground hover:bg-muted hover:border-border'
               )}
             >
@@ -146,7 +146,7 @@ export function ChipGroupMulti({
                 'rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                 selected
-                  ? 'border-primary bg-primary text-primary-foreground'
+                  ? 'border-sky-300 bg-sky-100 text-sky-800 dark:border-sky-600 dark:bg-sky-900/50 dark:text-sky-200'
                   : 'border-border bg-muted/50 text-foreground hover:bg-muted hover:border-border'
               )}
             >

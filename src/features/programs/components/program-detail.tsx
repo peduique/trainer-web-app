@@ -60,6 +60,7 @@ export function ProgramDetail({ uuid }: Props) {
         days={days}
         programId={program.id}
         programUuid={uuid}
+        program={program}
       />
     </div>
   );

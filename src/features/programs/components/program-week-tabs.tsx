@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import type { ProgramDay } from '@/models/programs/programs.schema';
+import type { ProgramDetail } from '@/models/programs/programs.schema';
 import { DayWorkoutsSection } from '@/features/program-days/components/day-workouts-section';
 
 interface Props {
@@ -8,9 +9,10 @@ interface Props {
   days: ProgramDay[];
   programId: number;
   programUuid: string;
+  program: ProgramDetail | null;
 }
 
-export function ProgramWeekTabs({ weeks, days, programId, programUuid }: Props) {
+export function ProgramWeekTabs({ weeks, days, programId, programUuid, program }: Props) {
   const [activeWeek, setActiveWeek] = useState(1);
   const weekDays = days.filter((d) => d.week === activeWeek);
 
@@ -42,6 +44,7 @@ export function ProgramWeekTabs({ weeks, days, programId, programUuid }: Props) 
                 day={day}
                 programId={programId}
                 programUuid={programUuid}
+                program={program}
               />
             </div>
           ))
