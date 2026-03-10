@@ -34,19 +34,14 @@ const NAV_ITEMS = [
   { href: '/support', label: 'Support', icon: HeadphonesIcon },
 ];
 
-export function Sidebar() {
+function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { collapsed, toggle } = useSidebar();
   const { user } = useAuth();
   const { mutate: logout, isPending } = useLogout();
 
   return (
-    <aside
-      className={cn(
-        'flex h-full flex-shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-200 ease-linear',
-        collapsed ? 'w-[4.5rem]' : 'w-64',
-      )}
-    >
+    <>
       <div
         className={cn(
           'flex items-center border-b border-sidebar-border px-3 py-4',
@@ -78,6 +73,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               aria-current={isActive ? 'page' : undefined}
               title={collapsed ? item.label : undefined}
               className={cn(
@@ -141,6 +137,40 @@ export function Sidebar() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </aside>
+    </>
+  );
+}
+
+export function Sidebar() {
+  const { collapsed, mobileOpen, setMobileOpen } = useSidebar();
+
+  return (
+    <>
+      {/* Desktop sidebar — hidden on mobile */}
+      <aside
+        className={cn(
+          'hidden md:flex h-full flex-shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-200 ease-linear',
+          collapsed ? 'w-[4.5rem]' : 'w-64',
+        )}
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* Mobile drawer — only rendered when open */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-40 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Drawer panel */}
+          <aside className="absolute left-0 top-0 flex h-full w-64 flex-col border-r border-sidebar-border bg-sidebar">
+            <SidebarContent onNavigate={() => setMobileOpen(false)} />
+          </aside>
+        </div>
+      )}
+    </>
   );
 }
