@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   createProgramAiSchema,
@@ -8,9 +8,9 @@ import {
 } from '@/models/programs/programs.schema';
 import { useCreateProgramAi } from '@/features/programs/hooks/use-create-program-ai';
 import { AiGenerationProgress } from './ai-generation-progress';
-import { ChipGroup, ChipGroupMulti } from '@/components/ui/chip-group';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import { ChipGroupField } from './chip-group-field';
+import { CheckboxField } from './checkbox-field';
 
 const DIFFICULTY_OPTIONS = [
   { value: 'beginner', label: 'Beginner' },
@@ -103,138 +103,76 @@ export function CreateProgramAiForm() {
   return (
     <form onSubmit={handleSubmit((d) => mutate(d))} className="flex flex-col gap-8">
       <div className="flex flex-col gap-6">
-        <Controller
+        <ChipGroupField
           name="goal"
           control={control}
-          render={({ field }) => (
-            <ChipGroup
-              label="Goal"
-              options={GOAL_OPTIONS}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.goal?.message}
-            />
-          )}
+          label="Goal"
+          options={GOAL_OPTIONS}
+          error={errors.goal?.message}
         />
-        <Controller
+        <ChipGroupField
           name="difficulty"
           control={control}
-          render={({ field }) => (
-            <ChipGroup
-              label="Difficulty"
-              options={DIFFICULTY_OPTIONS}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.difficulty?.message}
-            />
-          )}
+          label="Difficulty"
+          options={DIFFICULTY_OPTIONS}
+          error={errors.difficulty?.message}
         />
-        <Controller
+        <ChipGroupField
           name="weeks"
           control={control}
-          render={({ field }) => (
-            <ChipGroup
-              label="Program Length"
-              options={WEEKS_OPTIONS}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.weeks?.message}
-            />
-          )}
+          label="Program Length"
+          options={WEEKS_OPTIONS}
+          error={errors.weeks?.message}
         />
-        <Controller
+        <ChipGroupField
           name="days_per_week"
           control={control}
-          render={({ field }) => (
-            <ChipGroup
-              label="Days per Week"
-              options={DAYS_PER_WEEK_OPTIONS}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.days_per_week?.message}
-            />
-          )}
+          label="Days per Week"
+          options={DAYS_PER_WEEK_OPTIONS}
+          error={errors.days_per_week?.message}
         />
-        <Controller
+        <ChipGroupField
           name="duration_minutes"
           control={control}
-          render={({ field }) => (
-            <ChipGroup
-              label="Session Duration"
-              options={DURATION_OPTIONS}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.duration_minutes?.message}
-            />
-          )}
+          label="Session Duration"
+          options={DURATION_OPTIONS}
+          error={errors.duration_minutes?.message}
         />
-
-        <Controller
+        <ChipGroupField
           name="emphasis"
           control={control}
-          render={({ field }) => (
-            <ChipGroup
-              label="Emphasis"
-              options={EMPHASIS_OPTIONS}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.emphasis?.message}
-            />
-          )}
+          label="Emphasis"
+          options={EMPHASIS_OPTIONS}
+          error={errors.emphasis?.message}
         />
-        <Controller
+        <ChipGroupField
           name="equipment"
           control={control}
-          render={({ field }) => (
-            <ChipGroup
-              label="Equipment"
-              options={EQUIPMENT_OPTIONS}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.equipment?.message}
-            />
-          )}
+          label="Equipment"
+          options={EQUIPMENT_OPTIONS}
+          error={errors.equipment?.message}
         />
-        <Controller
+        <ChipGroupField
           name="injuries"
           control={control}
-          render={({ field }) => (
-            <ChipGroupMulti
-              label="Injuries / Limitations"
-              options={INJURY_OPTIONS}
-              value={field.value}
-              onChange={field.onChange}
-              exclusiveValue="none"
-              error={errors.injuries?.message}
-            />
-          )}
+          label="Injuries / Limitations"
+          options={INJURY_OPTIONS}
+          error={errors.injuries?.message}
+          isMulti
+          exclusiveValue="none"
         />
       </div>
 
       <div className="flex flex-wrap gap-6 border-t border-border pt-6">
-        <Controller
+        <CheckboxField
           name="include_warm_up"
           control={control}
-          render={({ field }) => (
-            <Checkbox
-              label="Include Warm-Up"
-              checked={field.value}
-              onChange={(checked) => field.onChange(checked)}
-              className="text-sm text-foreground"
-            />
-          )}
+          label="Include Warm-Up"
         />
-        <Controller
+        <CheckboxField
           name="include_stretching"
           control={control}
-          render={({ field }) => (
-            <Checkbox
-              label="Include Stretching"
-              checked={field.value}
-              onChange={(checked) => field.onChange(checked)}
-              className="text-sm text-foreground"
-            />
-          )}
+          label="Include Stretching"
         />
       </div>
 
