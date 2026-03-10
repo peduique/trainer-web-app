@@ -61,18 +61,11 @@ export function ProgramsList() {
           {/* Header */}
           <thead className="border-b border-border bg-muted/40">
             <tr>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                Program
-              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Program</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                 Duration
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                Created
-              </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                Status
-              </th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Created</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                 Progress
               </th>
@@ -86,10 +79,7 @@ export function ProgramsList() {
               const progressPercent = progress?.percent ?? 0;
 
               return (
-                <tr
-                  key={program.id}
-                  className="transition-colors hover:bg-muted/50"
-                >
+                <tr key={program.id} className="transition-colors hover:bg-muted/50">
                   {/* Program Name */}
                   <td className="px-6 py-4">
                     <Link
@@ -115,9 +105,7 @@ export function ProgramsList() {
                   {/* Duration */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span className="font-medium text-foreground">
-                        {program.weeks}w
-                      </span>
+                      <span className="font-medium text-foreground">{program.weeks}w</span>
                       <span>·</span>
                       <span>{program.days_per_week}d/w</span>
                     </div>
@@ -125,29 +113,14 @@ export function ProgramsList() {
 
                   {/* Created At */}
                   <td className="px-6 py-4">
-                    {program.created_at ? (
+                    {program.start_date ? (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4" />
-                        {formatDate(program.created_at)}
+                        {formatDate(program.start_date)}
                       </div>
                     ) : (
                       <span className="text-sm text-muted-foreground">—</span>
                     )}
-                  </td>
-
-                  {/* Status */}
-                  <td className="px-6 py-4">
-                    <div className="flex gap-2">
-                      {program.template && (
-                        <Badge variant="secondary">Template</Badge>
-                      )}
-                      {program.confirmed && (
-                        <Badge variant="default">Active</Badge>
-                      )}
-                      {!program.confirmed && !program.template && (
-                        <Badge variant="outline">Draft</Badge>
-                      )}
-                    </div>
                   </td>
 
                   {/* Progress */}
@@ -157,9 +130,7 @@ export function ProgramsList() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
                             <TrendingUp className="h-4 w-4 text-primary" />
-                            <span className="text-sm font-medium">
-                              {progressPercent}%
-                            </span>
+                            <span className="text-sm font-medium">{progressPercent}%</span>
                           </div>
                         </div>
                         <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
@@ -169,7 +140,7 @@ export function ProgramsList() {
                           />
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {progress.workouts_completed}/{progress.total_workouts}
+                          {progress.complete !== undefined ? progress.complete : progress.workouts_completed ?? 0}/{progress.total !== undefined ? progress.total : progress.total_workouts ?? 0}
                         </p>
                       </div>
                     ) : (
