@@ -25,16 +25,14 @@ function getProgressNumbers(program: Program): { completed: number; total: numbe
   const progress = program.current_progress;
   if (!progress) return null;
 
-  const completed =
-    progress.complete !== undefined ? progress.complete : (progress.workouts_completed ?? 0);
-  const total = progress.total !== undefined ? progress.total : (progress.total_workouts ?? 0);
+  const completed = progress.complete !== undefined ? progress.complete : progress.workouts_completed ?? 0;
+  const total = progress.total !== undefined ? progress.total : progress.total_workouts ?? 0;
 
   return { completed, total };
 }
 
 export function ProgramsList() {
   const { programs, isLoading, error } = usePrograms();
-  console.log('🚀 ~ ProgramsList ~ programs:', programs);
 
   if (isLoading) {
     return (
@@ -143,27 +141,25 @@ export function ProgramsList() {
 
                   {/* Progress */}
                   <td className="px-6 py-4">
-                    {progress && progressNumbers ? (
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
-                            <TrendingUp className="h-4 w-4 text-primary" />
-                            <span className="text-sm font-medium">{progressPercent}%</span>
-                          </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <TrendingUp className="h-4 w-4 text-primary" />
+                          <span className="text-sm font-medium">{progressPercent}%</span>
                         </div>
-                        <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all"
-                            style={{ width: `${progressPercent}%` }}
-                          />
-                        </div>
+                      </div>
+                      <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all"
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
+                      {progressNumbers && (
                         <p className="text-xs text-muted-foreground">
                           {progressNumbers.completed}/{progressNumbers.total}
                         </p>
-                      </div>
-                    ) : (
-                      <div className="text-xs text-muted-foreground">No progress</div>
-                    )}
+                      )}
+                    </div>
                   </td>
                 </tr>
               );
