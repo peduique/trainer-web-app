@@ -5,7 +5,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Calendar, TrendingUp, Dumbbell } from 'lucide-react';
+import { Calendar, TrendingUp, Dumbbell, ChevronRight } from 'lucide-react';
 import type { Program } from '@/models/programs/programs.schema';
 
 const formatDate = (date: string) => {
@@ -29,6 +29,74 @@ function getProgressNumbers(program: Program): { completed: number; total: numbe
   const total = progress.total !== undefined ? progress.total : progress.total_workouts ?? 0;
 
   return { completed, total };
+}
+
+function ProgramCard({ program }: { program: Program }) {
+  const progress = program.current_progress;
+  const progressPercent = progress?.percent ?? 0;
+  const progressNumbers = getProgressNumbers(program);
+
+  return (
+    <Link href={`/programs/${program.uuid}`}>
+      <div className="group rounded-lg border border-border bg-card p-4 transition-all hover:shadow-md hover:border-primary/50">
+        {/* Header */}
+        <div className="mb-3 flex items-start justify-between">
+          <div className="flex items-start gap-3 flex-1 min-w-0">
+            <div className="mt-1 rounded-lg bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors flex-shrink-0">
+              <Dumbbell className="h-5 w-5 text-primary" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                {program.name}
+              </p>
+              {program.description && (
+                <p className="text-xs text-muted-foreground line-clamp-1 mt-1">
+                  {program.description}
+                </p>
+              )}
+            </div>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 ml-2" />
+        </div>
+
+        {/* Meta Info */}
+        <div className="mb-3 flex flex-wrap gap-3 text-sm text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <span className="font-medium text-foreground">{program.weeks}w</span>
+            <span>·</span>
+            <span>{program.days_per_week}d/w</span>
+          </div>
+          {program.start_date && (
+            <div className="flex items-center gap-1">
+              <Calendar className="h-4 w-4" />
+              <span>{formatDate(program.start_date)}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Progress */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <TrendingUp className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium">{progressPercent}%</span>
+            </div>
+          </div>
+          <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+          {progressNumbers && (
+            <p className="text-xs text-muted-foreground">
+              {progressNumbers.completed}/{progressNumbers.total} workouts
+            </p>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 export function ProgramsList() {
@@ -70,103 +138,109 @@ export function ProgramsList() {
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          {/* Header */}
-          <thead className="border-b border-border bg-muted/40">
-            <tr>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Program</th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                Duration
-              </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Created</th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                Progress
-              </th>
-            </tr>
-          </thead>
+    <>
+      {/* Mobile: Cards Grid */}
+      <div className="grid grid-cols-1 gap-4 md:hidden">
+        {programs.map((program) => (
+          <ProgramCard key={program.id} program={program} />
+        ))}
+      </div>
 
-          {/* Body */}
-          <tbody className="divide-y divide-border">
-            {programs.map((program) => {
-              const progress = program.current_progress;
-              const progressPercent = progress?.percent ?? 0;
-              const progressNumbers = getProgressNumbers(program);
+      {/* Desktop: Table */}
+      <div className="hidden md:block overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            {/* Header */}
+            <thead className="border-b border-border bg-muted/40">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Program</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Duration</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Created</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Progress</th>
+              </tr>
+            </thead>
 
-              return (
-                <tr key={program.id} className="transition-colors hover:bg-muted/50">
-                  {/* Program Name */}
-                  <td className="px-6 py-4">
-                    <Link
-                      href={`/programs/${program.uuid}`}
-                      className="group flex items-start gap-3"
-                    >
-                      <div className="mt-1 rounded-lg bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
-                        <Dumbbell className="h-5 w-5 text-primary" />
+            {/* Body */}
+            <tbody className="divide-y divide-border">
+              {programs.map((program) => {
+                const progress = program.current_progress;
+                const progressPercent = progress?.percent ?? 0;
+                const progressNumbers = getProgressNumbers(program);
+
+                return (
+                  <tr key={program.id} className="transition-colors hover:bg-muted/50">
+                    {/* Program Name */}
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/programs/${program.uuid}`}
+                        className="group flex items-start gap-3"
+                      >
+                        <div className="mt-1 rounded-lg bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
+                          <Dumbbell className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-foreground group-hover:text-primary transition-colors">
+                            {program.name}
+                          </p>
+                          {program.description && (
+                            <p className="text-xs text-muted-foreground truncate">
+                              {program.description}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    </td>
+
+                    {/* Duration */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground">{program.weeks}w</span>
+                        <span>·</span>
+                        <span>{program.days_per_week}d/w</span>
                       </div>
-                      <div className="min-w-0">
-                        <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                          {program.name}
-                        </p>
-                        {program.description && (
-                          <p className="text-xs text-muted-foreground truncate">
-                            {program.description}
+                    </td>
+
+                    {/* Created At */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {program.start_date ? (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="h-4 w-4" />
+                          {formatDate(program.start_date)}
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">—</span>
+                      )}
+                    </td>
+
+                    {/* Progress */}
+                    <td className="px-6 py-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <TrendingUp className="h-4 w-4 text-primary" />
+                            <span className="text-sm font-medium">{progressPercent}%</span>
+                          </div>
+                        </div>
+                        <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all"
+                            style={{ width: `${progressPercent}%` }}
+                          />
+                        </div>
+                        {progressNumbers && (
+                          <p className="text-xs text-muted-foreground">
+                            {progressNumbers.completed}/{progressNumbers.total}
                           </p>
                         )}
                       </div>
-                    </Link>
-                  </td>
-
-                  {/* Duration */}
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span className="font-medium text-foreground">{program.weeks}w</span>
-                      <span>·</span>
-                      <span>{program.days_per_week}d/w</span>
-                    </div>
-                  </td>
-
-                  {/* Created At */}
-                  <td className="px-6 py-4">
-                    {program.start_date ? (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        {formatDate(program.start_date)}
-                      </div>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">—</span>
-                    )}
-                  </td>
-
-                  {/* Progress */}
-                  <td className="px-6 py-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <TrendingUp className="h-4 w-4 text-primary" />
-                          <span className="text-sm font-medium">{progressPercent}%</span>
-                        </div>
-                      </div>
-                      <div className="h-2 w-24 rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all"
-                          style={{ width: `${progressPercent}%` }}
-                        />
-                      </div>
-                      {progressNumbers && (
-                        <p className="text-xs text-muted-foreground">
-                          {progressNumbers.completed}/{progressNumbers.total}
-                        </p>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
