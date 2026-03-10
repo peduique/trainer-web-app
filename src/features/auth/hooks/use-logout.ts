@@ -9,8 +9,14 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: logout,
-    onSuccess: () => {
-      queryClient.clear();
+    onSuccess: async () => {
+      // Clear all queries and redirect to login
+      await queryClient.clear();
+      router.push('/login');
+    },
+    onError: async () => {
+      // Even if logout fails, clear local state and redirect
+      await queryClient.clear();
       router.push('/login');
     },
   });

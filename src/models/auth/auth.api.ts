@@ -19,12 +19,14 @@ export async function login(data: LoginInput): Promise<AuthResponse> {
 }
 
 export async function logout(): Promise<void> {
-  setStoredToken(null);
-  await clearAuthCookie();
   try {
     await apiClient.delete<void>('/auth/logout');
   } catch {
     // Backend may not have logout endpoint
+  } finally {
+    // Always clear local state even if backend call fails
+    setStoredToken(null);
+    await clearAuthCookie();
   }
 }
 
