@@ -1,14 +1,13 @@
 'use client';
 
-import { BProgress } from '@bprogress/next';
+import { ProgressProvider as BProgressProvider } from '@bprogress/next';
 
 export function ProgressProvider() {
   return (
-    <BProgress
+    <BProgressProvider
       height="4px"
       color="#3b82f6"
       options={{ showSpinner: false }}
-      shallowRouting
     />
   );
 }
