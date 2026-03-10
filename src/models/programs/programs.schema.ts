@@ -21,7 +21,7 @@ export const programSchema = z.object({
   confirmed: z.boolean(),
   start_date: z.string().nullable().optional(),
   created_at: z.string().optional(),
-  current_progress: programProgressSchema.optional(),
+  current_progress: programProgressSchema.optional().default({ percent: 0 }),
 });
 
 export type Program = z.infer<typeof programSchema>;

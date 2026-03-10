@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Calendar, TrendingUp, Dumbbell } from 'lucide-react';
+import type { Program } from '@/models/programs/programs.schema';
 
 const formatDate = (date: string) => {
   const d = new Date(date);
@@ -16,8 +17,24 @@ const formatDate = (date: string) => {
   });
 };
 
+/**
+ * Extract progress numbers from program, handling both new and legacy fields.
+ * Returns { completed, total } or null if progress is unavailable.
+ */
+function getProgressNumbers(program: Program): { completed: number; total: number } | null {
+  const progress = program.current_progress;
+  if (!progress) return null;
+
+  const completed =
+    progress.complete !== undefined ? progress.complete : (progress.workouts_completed ?? 0);
+  const total = progress.total !== undefined ? progress.total : (progress.total_workouts ?? 0);
+
+  return { completed, total };
+}
+
 export function ProgramsList() {
   const { programs, isLoading, error } = usePrograms();
+  console.log('🚀 ~ ProgramsList ~ programs:', programs);
 
   if (isLoading) {
     return (
@@ -77,6 +94,7 @@ export function ProgramsList() {
             {programs.map((program) => {
               const progress = program.current_progress;
               const progressPercent = progress?.percent ?? 0;
+              const progressNumbers = getProgressNumbers(program);
 
               return (
                 <tr key={program.id} className="transition-colors hover:bg-muted/50">
@@ -125,7 +143,7 @@ export function ProgramsList() {
 
                   {/* Progress */}
                   <td className="px-6 py-4">
-                    {progress ? (
+                    {progress && progressNumbers ? (
                       <div className="space-y-1">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
@@ -140,11 +158,11 @@ export function ProgramsList() {
                           />
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {progress.complete !== undefined ? progress.complete : progress.workouts_completed ?? 0}/{progress.total !== undefined ? progress.total : progress.total_workouts ?? 0}
+                          {progressNumbers.completed}/{progressNumbers.total}
                         </p>
                       </div>
                     ) : (
-                      <div className="h-2 w-24 rounded-full bg-muted" />
+                      <div className="text-xs text-muted-foreground">No progress</div>
                     )}
                   </td>
                 </tr>
