@@ -49,8 +49,8 @@ export function ProgramDetail({ uuid }: Props) {
             />
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
-            {(progress.complete ?? progress.workouts_completed) ?? 0} /{' '}
-            {(progress.total ?? progress.total_workouts) ?? 0} workouts completed
+            {progress.complete !== undefined ? progress.complete : progress.workouts_completed ?? 0} /{' '}
+            {progress.total !== undefined ? progress.total : progress.total_workouts ?? 0} workouts completed
           </p>
         </div>
       )}
