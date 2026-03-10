@@ -17,11 +17,6 @@ import {
 } from './asana-api';
 import type { Ticket, TicketComment } from './support.schema';
 
-const TRIAGE_FUNCTION_URL =
-  typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_TRIAGE_FUNCTION_URL ?? '') : '';
-const SUPABASE_ANON_KEY =
-  typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '') : '';
-
 interface TriageResult {
   success: boolean;
   id: string;
@@ -41,12 +36,24 @@ async function triageIssue(
   description: string,
   asanaTaskGid: string
 ): Promise<TriageResult | null> {
+  // Only access process.env on the server or during build
+  if (typeof window !== 'undefined') {
+    return null;
+  }
+
+  const triageFunctionUrl = process.env.NEXT_PUBLIC_TRIAGE_FUNCTION_URL ?? '';
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
+
+  if (!triageFunctionUrl || !supabaseAnonKey) {
+    return null;
+  }
+
   try {
-    const response = await fetch(TRIAGE_FUNCTION_URL, {
+    const response = await fetch(triageFunctionUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Authorization: `Bearer ${supabaseAnonKey}`,
       },
       body: JSON.stringify({ title, description, asanaTaskGid }),
     });

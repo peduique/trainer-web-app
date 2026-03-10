@@ -1,4 +1,3 @@
-import { env } from '@/config/env';
 import { getStoredToken } from '@/lib/auth-token';
 
 export interface ApiError {

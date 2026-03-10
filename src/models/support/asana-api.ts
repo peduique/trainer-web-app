@@ -3,12 +3,14 @@
  * Uses NEXT_PUBLIC_ASANA_* (or EXPO_PUBLIC_* via next.config env).
  */
 
+import { getAsanaConfig } from './asana-config';
+
 const ASANA_BASE_URL = 'https://app.asana.com/api/1.0';
 const ASANA_USERID_FIELD_GID = '1213528194350621';
 const ASANA_LASTREADAT_FIELD_GID = '1213529841045055';
 
 function getAsanaHeaders(): Record<string, string> {
-  const pat = typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_ASANA_PAT ?? '') : '';
+  const { pat } = getAsanaConfig();
   return {
     Authorization: `Bearer ${pat}`,
     'Content-Type': 'application/json',
@@ -71,8 +73,7 @@ async function asanaFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
 export async function createAsanaTask(params: CreateTaskParams): Promise<AsanaTask> {
   const { title, description, category, user } = params;
-  const projectGid =
-    typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_ASANA_PROJECT_GID ?? '') : '';
+  const { projectGid } = getAsanaConfig();
 
   const task = await asanaFetch<AsanaTask>('/tasks', {
     method: 'POST',
@@ -99,8 +100,7 @@ function extractLastReadAt(task: AsanaTask): AsanaTask {
 let cachedWorkspaceGid: string | null = null;
 async function getWorkspaceGid(): Promise<string> {
   if (cachedWorkspaceGid) return cachedWorkspaceGid;
-  const projectGid =
-    typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_ASANA_PROJECT_GID ?? '') : '';
+  const { projectGid } = getAsanaConfig();
   const project = await asanaFetch<{ workspace: { gid: string } }>(
     `/projects/${projectGid}?opt_fields=workspace`
   );
@@ -109,8 +109,7 @@ async function getWorkspaceGid(): Promise<string> {
 }
 
 export async function searchAsanaTasksByUser(userId: string): Promise<AsanaTask[]> {
-  const projectGid =
-    typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_ASANA_PROJECT_GID ?? '') : '';
+  const { projectGid } = getAsanaConfig();
   const fields =
     'gid,name,notes,completed,created_at,modified_at,custom_fields.gid,custom_fields.display_value,custom_fields.date_value';
   const params = new URLSearchParams({
@@ -161,7 +160,7 @@ export async function deleteAsanaTask(taskGid: string): Promise<void> {
 }
 
 export async function uploadAsanaAttachment(taskGid: string, file: File): Promise<void> {
-  const pat = typeof window !== 'undefined' ? (process.env.NEXT_PUBLIC_ASANA_PAT ?? '') : '';
+  const { pat } = getAsanaConfig();
   const formData = new FormData();
   formData.append('file', file);
 

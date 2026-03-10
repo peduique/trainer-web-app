@@ -9,7 +9,7 @@ const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-heading' });
 
 export const metadata: Metadata = {
-  title: { template: '%s | Trainer Portal', default: 'Trainer Portal' },
+  title: { template: '%s | Element26 - TR[Ai]NER', default: 'Element26 - TR[Ai]NER' },
   description: 'B2B SaaS platform for trainers',
 };
 
