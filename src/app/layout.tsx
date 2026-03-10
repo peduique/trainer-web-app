@@ -3,6 +3,7 @@ import { DM_Sans, Outfit } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { ProgressProvider } from '@/components/providers/progress-provider';
 import { cn } from '@/lib/utils';
 
 const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-sans' });
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen bg-background font-sans text-foreground antialiased">
+        <ProgressProvider />
         <QueryProvider>
           <ThemeProvider>{children}</ThemeProvider>
         </QueryProvider>
